@@ -50,8 +50,8 @@ input, select {
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="form-row">
-            <label for="username">Name:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your name" required>
+            <label for="fullname">Name:</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter your name" required>
         </div>
 
         <div class="form-row">
@@ -63,7 +63,10 @@ input, select {
         <label for="mobile">Mobile Number:</label>
         <input type="number" id="mobile" name="mobile" placeholder="Enter your mobile number" maxlength="10" required>
     </div>
-
+        <div class="form-row">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter Username" required>
+        </div>
         <div class="form-row">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Enter password" minlength="5" required>

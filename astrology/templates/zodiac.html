@@ -1,24 +1,205 @@
 {% extends 'index2.html' %}
 {% block content %}
-<html>
-<head>
-    <title>Astrology</title>
-</head>
-<body>
-<h1  style="color:#FFFFFF;font-size:48px">Your Zodiac Sign</h1><br><br>
-    <form method="post" action="{% url 'zodiac' %}">
-        {% csrf_token %}
-        <label for="month"  style="color:#FFFFFF; font-size: 32px;">Month of your birth:</label>
-        <input type="text" id="month" name="month" placeholder="e.g., January" style="font-size: 24px;width: 250px" required><br><br>
+<style>
+  .zodiac-container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+  }
 
-        <label for="day"  style="color:#FFFFFF; font-size: 32px;">Date of your birth:</label>
-<input type="number" id="day" name="day" placeholder="e.g., 10" style="font-size: 24px; width: 250px" min="1" max="31" required><br><br>
-        <label for="place"  style="color:#FFFFFF; font-size: 32px;">Place of birth: </label>
-        <input type="text" id="place" name="place" placeholder="e.g. vijayawada" style="font-size: 24px; width: 250px;" required><br><br>
+  .zodiac-container h1 {
+    font-size: 48px;
+    text-align: center;
+    color: gold;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 6px black;
+  }
 
-        <input type="submit" value="Submit" class="button">
-    </form><br><br>
-    <b><p  style="color:#FFFFFF;font-size: 48px;">You were born under the sign:{{ astro_sign }}</p></b>
+  .zodiac-container label {
+    display: block;
+    margin: 20px 0 10px;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+  }
+
+  .zodiac-container input[type="text"],
+  .zodiac-container input[type="date"],
+  .zodiac-container input[type="time"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 2px solid #fbc02d;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    margin-top: 5px;
+  }
+
+  .zodiac-container input::placeholder {
+    color: #ccc;
+  }
+
+  #suggestions {
+    width: 100%;
+    background: white;
+    border: 0px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    position: absolute;
+    z-index: 10;
+    color: black;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  #suggestions div {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  #suggestions div:hover {
+    background-color: #f0f0f0;
+  }
+
+  .zodiac-container button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 22px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+    border: none;
+    border-radius: 12px;
+    color: black;
+    font-weight: bold;
+    box-shadow: 0 6px 10px rgba(255, 215, 0, 0.6);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 30px;
+  }
+
+  .zodiac-container button:hover {
+    background: linear-gradient(135deg, #fff176 0%, #fbc02d 100%);
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.8);
+  }
+
+  #result {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid gold;
+    border-radius: 12px;
+    font-size: 22px;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+</style>
+
+<div class="zodiac-container">
+  <h1>Zodiac Sign</h1>
+
+  <form id="zodiac-form" method="post" action="{% url 'zodiac' %}">
+    {% csrf_token %}
+    <input type="hidden" id="latitude" name="latitude" />
+    <input type="hidden" id="longitude" name="longitude" />
+
+    <label for="date">Date:</label>
+    <input type="date" name="date" required />
+
+    <label for="time">Time:</label>
+    <input type="time" name="time" required />
+
+    <label for="location">Location:</label>
+    <input id="location-input" name="location" type="text" autocomplete="off" placeholder="Start typing your location..." />
+    <div id="suggestions"></div>
+
+    <button type="submit">Get Zodiac</button>
+  </form>
+
+  {% if zodiac_sign and ascendant_sign %}
+  <div id="result">
+    <p><strong>Zodiac Sign:</strong> {{ zodiac_sign }}</p>
+    <p><strong>House Name (Ascendant):</strong> {{ ascendant_sign }}</p>
+  </div>
+  {% endif %}
+</div>
+  <script>
+    const input = document.getElementById('location-input');
+    const suggestions = document.getElementById('suggestions');
+    const latInput = document.getElementById('latitude');
+    const lonInput = document.getElementById('longitude');
+    const form = document.getElementById('zodiac-form');
+    const resultDiv = document.getElementById('result');
+    let timeout = null;
+
+    input.addEventListener('input', () => {
+      clearTimeout(timeout);
+      const query = input.value.trim();
+      if (query.length < 3) {
+        suggestions.innerHTML = '';
+        latInput.value = '';
+        lonInput.value = '';
+        return;
+      }
+            suggestions.innerHTML = '<div>Loading...</div>';  // loading indicator
+
+      timeout = setTimeout(() => {
+        fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5`)
+          .then(res => res.json())
+          .then(data => {
+            suggestions.innerHTML = '';
+            if (data.length === 0) {
+              const noResult = document.createElement('div');
+              noResult.textContent = 'No location found.';
+              suggestions.appendChild(noResult);
+              return;
+            }
+            data.forEach(place => {
+              const div = document.createElement('div');
+              div.textContent = place.display_name;
+              div.addEventListener('click', () => {
+                input.value = place.display_name;
+                latInput.value = place.lat;
+                lonInput.value = place.lon;
+                suggestions.innerHTML = '';
+              });
+              suggestions.appendChild(div);
+            });
+          });
+      }, 200);
+    });
+     // Prevent submission without a selected location
+    form.addEventListener('submit', function (e) {
+      if (!latInput.value || !lonInput.value) {
+        e.preventDefault();
+        alert('Please select a location from the suggestions list.');
+      }
+    });
+   window.addEventListener('load', function () {
+    const navType = performance.getEntriesByType("navigation")[0].type;
+    if (navType === "reload") {
+      // Page was reloaded, so clear the location and hidden fields
+      document.getElementById('latitude').value = '';
+      document.getElementById('longitude').value = '';
+      document.getElementById('location-input').value = '';
+
+      // Optional: hide result div to prevent showing old data
+      const resultDiv = document.getElementById('result');
+      if (resultDiv) {
+        resultDiv.style.display = 'none';
+      }
+    }
+  });
+  </script>
 </body>
 </html>
 

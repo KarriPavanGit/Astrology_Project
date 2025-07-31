@@ -81,11 +81,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':'Astrologydb',
         'USER':'postgres',
-        'PASSWORD':'dbmssql',
+        'PASSWORD':'root',
         'HOST':'localhost',
         'PORT':'5432',
     }
 }
+
+
 
 
 

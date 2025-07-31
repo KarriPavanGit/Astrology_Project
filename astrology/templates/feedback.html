@@ -1,14 +1,80 @@
 {% extends 'index2.html' %}
 {% block content %}
-<center>
-    <h1 style="color:#FFFFFF; font-size: 48px;">Feedback Form</h1>
-    <br>
-<form method="post" style="color:#FFFFFF; font-size: 32px; width:1000px;">
+<style>
+    .feedback-container {
+  max-width: 700px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  color: white;
+}
+
+.feedback-container h1 {
+  font-size: 48px;
+  text-align: center;
+  color: gold;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 6px black;
+}
+
+.feedback-form p {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.feedback-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.feedback-form input[type="text"],
+.feedback-form input[type="email"],
+.feedback-form textarea,
+.feedback-form select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 2px solid #4caf50;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.feedback-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 22px;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 6px 10px rgba(76, 175, 80, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-button:hover {
+  background: linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%);
+  box-shadow: 0 8px 16px rgba(46, 125, 50, 0.6);
+}
+
+</style>
+<div class="feedback-container">
+  <h1>Feedback Form</h1>
+  <form method="post" class="feedback-form">
     {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit" class="button">Submit</button>
-</form>
-    </center>
-</body>
-</html>
+    {{ form.as_p }}
+    <button type="submit" class="submit-button">Submit</button>
+  </form>
+</div>
 {% endblock %}

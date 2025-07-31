@@ -7,15 +7,16 @@ from django.utils import timezone
 
 # Create your models here.
 class registration(models.Model):
-    name = models.CharField(max_length=50)
+    fullname = models.CharField(max_length=50,null='false')
     gender_choices = (('male', 'Male'), ('female', 'Female'), ('others', 'Others'))
-    gender = models.CharField(max_length=20, choices=gender_choices)
+    gender = models.CharField(max_length=20, choices=gender_choices,null='false')
     email = models.EmailField(primary_key='true')
-    mobile = models.BigIntegerField(unique='true')
-    password = models.CharField(max_length=50)
+    username=models.CharField(max_length=50,unique='true',null='false')
+    mobile = models.BigIntegerField(unique='true',null='false')
+    password = models.CharField(max_length=50,null='false')
 
     class Meta:
-        unique_together = ('name', 'email', 'mobile')
+        unique_together = ('username', 'email', 'mobile')
 
     class Meta:
         db_table = "registration_table"
