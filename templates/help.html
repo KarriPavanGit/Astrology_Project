@@ -1,0 +1,90 @@
+{% extends 'index2.html' %}
+{% load static %}
+{% block content %}
+
+<h1 class="faq-title">Frequently Asked Questions (FAQ)</h1>
+<style>
+    .faq-title {
+  text-align: center;
+  color: gold;
+  font-size: 42px;
+  text-shadow: 2px 2px 6px black;
+  margin: 40px 0 20px;
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto 60px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.faq-checkbox {
+  display: none;
+}
+
+.faq-question {
+  display: block;
+  background-color: rgba(255, 215, 0, 0.15);
+  padding: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px 0;
+  color: white;
+}
+
+.faq-question:hover {
+  background-color: rgba(255, 215, 0, 0.25);
+}
+
+.answer {
+  display: none;
+  padding: 12px 18px;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid gold;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  color: white;
+  line-height: 1.6;
+}
+
+.faq-checkbox:checked + .faq-question {
+  background-color: rgba(255, 215, 0, 0.25);
+}
+
+.faq-checkbox:checked + .faq-question + .answer {
+  display: block;
+}
+
+</style>
+<div class="faq-container">
+  <input type="checkbox" class="faq-checkbox" id="faq-1">
+  <label class="faq-question" for="faq-1">1. What is astrology, and how does it work?</label>
+  <div class="answer">Astrology is the study of celestial bodies and their symbolic influence on human life. It offers insights into personality and life events by interpreting planetary positions.</div>
+
+  <input type="checkbox" class="faq-checkbox" id="faq-2">
+  <label class="faq-question" for="faq-2">2. How do I determine my zodiac sign?</label>
+  <div class="answer">Your zodiac sign is based on your birth date. Each of the 12 zodiac signs corresponds to a specific date range, such as Aries (March 21 – April 19).</div>
+
+  <input type="checkbox" class="faq-checkbox" id="faq-3">
+  <label class="faq-question" for="faq-3">3. Can astrology predict the future accurately?</label>
+  <div class="answer">Astrology offers patterns and tendencies based on celestial events, not fixed predictions. It’s a tool for insight, not fortune-telling.</div>
+
+  <input type="checkbox" class="faq-checkbox" id="faq-4">
+  <label class="faq-question" for="faq-4">4. What's the difference between Western and Vedic astrology?</label>
+  <div class="answer">Western astrology uses the tropical zodiac, while Vedic (Jyotish) uses the sidereal zodiac. Both systems have different interpretations and methods.</div>
+
+  <input type="checkbox" class="faq-checkbox" id="faq-5">
+  <label class="faq-question" for="faq-5">5. How can I get a personalized horoscope reading?</label>
+  <div class="answer">Provide your birth date, time, and place to an astrologer or online tool. They’ll generate a birth chart and offer personalized readings.</div>
+</div>
+
+{% endblock %}
